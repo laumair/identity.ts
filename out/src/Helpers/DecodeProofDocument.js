@@ -40,15 +40,13 @@ var DID_1 = require("../DID/DID");
 function DecodeProofDocument(proofDocument, provider) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    DIDDocument_1.DIDDocument.readDIDDocument(provider, new DID_1.DID(proofDocument.creator).GetUUID())
-                        .then(function (issuerDID) {
-                        resolve({
-                            'issuer': issuerDID,
-                            'issuerKeyId': new DID_1.DID(proofDocument.verificationMethod).GetFragment(),
-                            'challengeNonce': proofDocument.nonce
-                        });
-                    }).catch(function (err) { console.log(err); reject(err); });
+            return [2 /*return*/, DIDDocument_1.DIDDocument.readDIDDocument(provider, new DID_1.DID(proofDocument.creator).GetUUID())
+                    .then(function (issuerDID) {
+                    return {
+                        'issuer': issuerDID,
+                        'issuerKeyId': new DID_1.DID(proofDocument.verificationMethod).GetFragment(),
+                        'challengeNonce': proofDocument.nonce
+                    };
                 })];
         });
     });

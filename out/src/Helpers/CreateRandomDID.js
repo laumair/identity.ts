@@ -12,16 +12,11 @@ function CreateRandomDID(seed) {
 }
 exports.CreateRandomDID = CreateRandomDID;
 function CreateRandomDIDFromPublicKey(keyId) {
-    return new Promise(function (resolve, reject) {
-        GenerateKeypair_1.GenerateRSAKeypair()
-            .then(function (keypair) {
-            var Document = DIDDocument_1.DIDDocument.createDIDDocument(new DID_1.DID(Hash_1.Hash(keypair.GetPublicKey())));
-            Document.AddKeypair(keypair, keyId);
-            resolve(Document);
-        })
-            .catch(function (err) {
-            reject(err);
-        });
+    return GenerateKeypair_1.GenerateRSAKeypair()
+        .then(function (keypair) {
+        var Document = DIDDocument_1.DIDDocument.createDIDDocument(new DID_1.DID(Hash_1.Hash(keypair.GetPublicKey())));
+        Document.AddKeypair(keypair, keyId);
+        return Document;
     });
 }
 exports.CreateRandomDIDFromPublicKey = CreateRandomDIDFromPublicKey;

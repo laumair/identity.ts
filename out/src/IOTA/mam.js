@@ -47,15 +47,12 @@ var MAMPublisher = /** @class */ (function () {
     MAMPublisher.prototype.PublishMessage = function (message, tag, mwm) {
         var _this = this;
         if (mwm === void 0) { mwm = 14; }
-        return new Promise(function (resolve, reject) {
-            var trytesMessage = converter_1.asciiToTrytes(message);
-            var mamMessage = MAM.create(_this.mamState, trytesMessage);
-            MAM.attach(mamMessage.payload, mamMessage.address, 3, mwm, tag)
-                .then(function () {
-                _this.mamState = mamMessage.state;
-                resolve(mamMessage.root);
-            })
-                .catch(function (err) { reject(err); });
+        var trytesMessage = converter_1.asciiToTrytes(message);
+        var mamMessage = MAM.create(this.mamState, trytesMessage);
+        return MAM.attach(mamMessage.payload, mamMessage.address, 3, mwm, tag)
+            .then(function () {
+            _this.mamState = mamMessage.state;
+            return mamMessage.root;
         });
     };
     /**
@@ -93,20 +90,17 @@ exports.MAMPublisher = MAMPublisher;
  */
 function ReadMAMStream(provider, root, settings) {
     if (settings === void 0) { settings = new MAMSettings(); }
-    return new Promise(function (resolve, reject) {
-        //TODO: Check if MAM.Init is needed.
-        MAM.init(provider, root, settings.securityLevel);
-        MAM.fetch(root, settings.mode, settings.sideKey)
-            .then(function (result) {
-            var messages = [];
-            if (result.messages) {
-                for (var i = 0; i < result.messages.length; i++) {
-                    messages.push(converter_1.trytesToAscii(result.messages[i]));
-                }
+    //TODO: Check if MAM.Init is needed.
+    MAM.init(provider, root, settings.securityLevel);
+    return MAM.fetch(root, settings.mode, settings.sideKey)
+        .then(function (result) {
+        var messages = [];
+        if (result.messages) {
+            for (var i = 0; i < result.messages.length; i++) {
+                messages.push(converter_1.trytesToAscii(result.messages[i]));
             }
-            resolve(messages);
-        })
-            .catch(function (err) { reject(err); });
+        }
+        return messages;
     });
 }
 exports.ReadMAMStream = ReadMAMStream;
